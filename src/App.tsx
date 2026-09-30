@@ -52,6 +52,23 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const isAdmin = currentUser?.role === 'Admin';
   const isTeacher = currentUser?.role === 'Teacher';
 
+  const getPageTitle = (path: string) => {
+    switch (path) {
+      case '/': return 'Thống kê Tổng quan';
+      case '/users': return 'Quản lý Người dùng';
+      case '/school-year': return 'Quản lý Năm học';
+      case '/semesters': return 'Quản lý Học kỳ';
+      case '/classes': return 'Quản lý Lớp học';
+      case '/students': return 'Danh sách Học sinh';
+      case '/subjects': return 'Quản lý Môn học';
+      case '/kanban': return 'Phân công Giảng dạy';
+      case '/homeroom': return 'Lớp Chủ nhiệm';
+      case '/assignments': return 'Thông tin Giảng dạy';
+      case '/profile': return 'Tài khoản của tôi';
+      default: return 'Sổ Theo Dõi Học Tập Học Sinh';
+    }
+  };
+
   return (
     <div className="flex h-screen bg-[#f9fafb] dark:bg-zinc-950 transition-colors duration-300 overflow-hidden relative">
       {/* Mobile Backdrop */}
@@ -72,7 +89,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             {(!isCollapsed || isMobileOpen) && (
               <div className="flex flex-col overflow-hidden">
                 <span className="text-sm font-bold text-black dark:text-white truncate">Trường PTĐB</span>
-                <span className="text-xs text-black dark:text-white font-medium truncate">Nguyễn Đình Chiểu</span>
+                <span className="text-xs text-black dark:text-white font-medium truncate">Everest school</span>
               </div>
             )}
           </div>
@@ -147,7 +164,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <div className="text-black dark:text-white font-medium text-xs sm:text-sm flex items-center space-x-1 sm:space-x-2">
               <span className="font-bold hidden sm:inline">Dashboard</span>
               <span className="hidden sm:inline">/</span>
-              <span className="font-bold truncate max-w-[150px] sm:max-w-none">Sổ Theo Dõi Học Tập Học Sinh</span>
+              <span className="font-bold truncate max-w-[150px] sm:max-w-none">{getPageTitle(location.pathname)}</span>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -202,7 +219,10 @@ function App() {
   }, []);
 
   if (!user) {
-    return <Login onLogin={(u) => setUser(u)} />;
+    return <Login onLogin={(u) => {
+      setUser(u);
+      window.history.replaceState(null, '', u.role === 'Admin' ? '/' : '/homeroom');
+    }} />;
   }
 
   return (

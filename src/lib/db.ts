@@ -28,9 +28,17 @@ export const getInitialData = () => {
   const oldClasses = JSON.parse(localStorage.getItem('classes') || '[]');
   if (!localStorage.getItem('classes') || (oldClasses.length > 0 && oldClasses[0].schoolYear !== undefined)) {
     localStorage.setItem('classes', JSON.stringify([
-      { id: 1, name: '10A1', schoolYearId: 2, teacherId: 2, grade: '10', isActive: 1 },
-      { id: 2, name: '10A2', schoolYearId: 2, teacherId: 3, grade: '10', isActive: 1 },
+      { id: 1, name: '10E1', schoolYearId: 2, teacherId: 2, grade: '10', isActive: 1 },
+      { id: 2, name: '10E2', schoolYearId: 2, teacherId: 3, grade: '10', isActive: 1 },
     ]));
+  } else if (oldClasses.some((c: any) => c.name.includes('A'))) {
+    const updatedClasses = oldClasses.map((c: any) => {
+      if (c.name.includes('A')) {
+        return { ...c, name: c.name.replace('A', 'E') };
+      }
+      return c;
+    });
+    localStorage.setItem('classes', JSON.stringify(updatedClasses));
   }
 
   const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
