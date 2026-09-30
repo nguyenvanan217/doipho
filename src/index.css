@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  body {
+    @apply bg-[#f9fafb] text-gray-900 transition-colors duration-0;
+  }
+  .dark body {
+    @apply bg-zinc-950 text-gray-100;
+  }
+  .dark .bg-white {
+    @apply bg-zinc-900 border-zinc-800;
+  }
+  .dark .text-gray-800 {
+    @apply text-gray-100;
+  }
+  .dark .text-gray-600, .dark .text-gray-500 {
+    @apply text-gray-400;
+  }
+  .dark .border-gray-100, .dark .border-gray-200 {
+    @apply border-zinc-800;
+  }
+  .dark .hover\:bg-gray-100:hover {
+    @apply bg-zinc-800;
+  }
+  .dark .bg-gray-50 {
+    @apply bg-zinc-900;
+  }
+  .dark .hover\:bg-gray-50:hover {
+    @apply bg-zinc-800;
+  }
+}
+
+/* View Transition Wave Effect */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+    z-index: 0;
+}
+
+::view-transition-new(root) {
+    z-index: 1;
+}
+
+@keyframes reveal {
+    from {
+        clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
+        opacity: 0.7;
+    }
+    to {
+        clip-path: circle(150% at var(--x, 50%) var(--y, 50%));
+        opacity: 1;
+    }
+}
+
+::view-transition-new(root) {
+    animation: reveal 0.5s ease-in-out forwards;
+}
+
+button, a, select, input[type='checkbox'], input[type='radio'], [role='button'] { cursor: pointer !important; }
+
