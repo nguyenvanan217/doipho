@@ -88,8 +88,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
             {(!isCollapsed || isMobileOpen) && (
               <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-bold text-black dark:text-white truncate">Trường PTĐB</span>
-                <span className="text-xs text-black dark:text-white font-medium truncate">Everest school</span>
+                <span className="text-sm font-bold text-black dark:text-white truncate">Everest school</span>
               </div>
             )}
           </div>

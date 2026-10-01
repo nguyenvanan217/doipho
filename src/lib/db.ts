@@ -71,7 +71,7 @@ export const getInitialData = () => {
   if (!localStorage.getItem('schoolYears')) {
     localStorage.setItem('schoolYears', JSON.stringify([
       { id: 1, yearName: '2023-2024', startDate: '2023-09-05', endDate: '2024-05-31', isActive: 0 },
-      { id: 2, yearName: '2024-2025', startDate: '2024-09-05', endDate: '2025-05-31', isActive: 1 },
+      { id: 2, yearName: '2026-2027', startDate: '2024-09-05', endDate: '2025-05-31', isActive: 1 },
     ]));
   }
 

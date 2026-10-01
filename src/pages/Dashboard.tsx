@@ -8,7 +8,7 @@ export default function Dashboard() {
     studentsCount: 0,
     classesCount: 0,
     teachersCount: 0,
-    activeSchoolYear: '2024-2025'
+    activeSchoolYear: '2026-2027'
   });
 
   const [genderData, setGenderData] = useState<any[]>([]);
@@ -45,7 +45,7 @@ export default function Dashboard() {
       studentsCount: students.length,
       classesCount: classes.length,
       teachersCount: users.filter((u: any) => u.role === 'Teacher').length,
-      activeSchoolYear: '2024-2025'
+      activeSchoolYear: '2026-2027'
     });
 
     const males = students.filter((s: any) => s.gender === 'Nam').length;
