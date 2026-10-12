@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getStudents, getClasses, getUsers } from '../lib/db';
-import { Users, GraduationCap, AlertCircle, Calendar, TrendingUp, School } from 'lucide-react';
+import { Users, GraduationCap, AlertCircle, Calendar, TrendingUp, School, Sparkles, Loader2, Copy, Check, FileText, X } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { toast } from 'sonner';
+import { generateDashboardReport } from '../lib/ai';
+import FormattedMarkdown from '../components/FormattedMarkdown';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -14,6 +17,62 @@ export default function Dashboard() {
   const [genderData, setGenderData] = useState<any[]>([]);
   const [classData, setClassData] = useState<any[]>([]);
   const [animatedTotal, setAnimatedTotal] = useState(0);
+
+  // AI Report State
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [aiReportContent, setAiReportContent] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleGenerateAIReport = async () => {
+    setIsLoadingReport(true);
+    try {
+      const students = getStudents();
+      const classes = getClasses();
+      const users = getUsers();
+
+      const males = students.filter((s: any) => s.gender === 'Nam').length;
+      const females = students.filter((s: any) => s.gender === 'Nữ').length;
+
+      const statusStats: { [key: string]: number } = {};
+      students.forEach((s: any) => {
+        const st = s.status || 'Đang học';
+        statusStats[st] = (statusStats[st] || 0) + 1;
+      });
+
+      const classesStats = classes.map((c: any) => ({
+        name: c.name,
+        count: students.filter((s: any) => Number(s.classId) === Number(c.id)).length
+      }));
+
+      const report = await generateDashboardReport({
+        studentsCount: students.length,
+        classesCount: classes.length,
+        teachersCount: users.filter((u: any) => u.role === 'Teacher').length,
+        activeSchoolYear: stats.activeSchoolYear,
+        males,
+        females,
+        statusStats,
+        classesStats,
+      });
+
+      setAiReportContent(report);
+      setReportModalOpen(true);
+      toast.success('🎉 AI đã lập báo cáo tổng quan thành công!');
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Không thể tạo báo cáo AI lúc này. Vui lòng thử lại!');
+    } finally {
+      setIsLoadingReport(false);
+    }
+  };
+
+  const handleCopyReport = () => {
+    navigator.clipboard.writeText(aiReportContent);
+    setIsCopied(true);
+    toast.success('Đã sao chép báo cáo vào clipboard!');
+    setTimeout(() => setIsCopied(false), 2000);
+  };
 
   useEffect(() => {
     if (stats.studentsCount > 0) {
@@ -74,10 +133,32 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-6 w-full max-w-[1600px] mx-auto">
-      <div className="flex items-center justify-between space-y-2 mb-6">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
-          Xin chào, Chào mừng trở lại 👋
-        </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
+            Xin chào, Chào mừng trở lại 👋
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Tổng quan tình hình học đường và thống kê trường Everest School.
+          </p>
+        </div>
+        <button
+          onClick={handleGenerateAIReport}
+          disabled={isLoadingReport}
+          className="inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white rounded-lg font-semibold text-sm transition-all shadow-md hover:shadow-lg cursor-pointer disabled:opacity-50"
+        >
+          {isLoadingReport ? (
+            <>
+              <Loader2 size={16} className="animate-spin mr-2" />
+              AI Đang phân tích...
+            </>
+          ) : (
+            <>
+              <Sparkles size={16} className="mr-2" />
+              ✨ AI Nhận định tổng quan
+            </>
+          )}
+        </button>
       </div>
       
       {/* Cards */}
@@ -224,6 +305,72 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* AI Report Modal */}
+      {reportModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setReportModalOpen(false)}></div>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-3xl relative z-10 overflow-hidden flex flex-col max-h-[88vh] border border-gray-200 dark:border-zinc-800">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-zinc-800 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-zinc-900 dark:to-zinc-900">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-black dark:text-white">
+                    Báo cáo Nhận định & Đánh giá Tổng quan Học đường
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Phân tích tự động bởi Everest AI (Model qwen/qwen3.8-27b) • Năm học {stats.activeSchoolYear}
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setReportModalOpen(false)} className="text-gray-400 hover:text-black dark:hover:text-white p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-zinc-900">
+              <FormattedMarkdown content={aiReportContent} />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/80 flex items-center justify-between">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                💡 Dữ liệu được tính toán dựa trên {stats.studentsCount} học sinh và {stats.classesCount} lớp học thực tế.
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyReport}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                >
+                  {isCopied ? (
+                    <>
+                      <Check size={16} className="mr-1.5 text-emerald-600" />
+                      Đã chép
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} className="mr-1.5" />
+                      Sao chép báo cáo
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReportModalOpen(false)}
+                  className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors cursor-pointer"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

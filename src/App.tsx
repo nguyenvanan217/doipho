@@ -15,6 +15,8 @@ import TeachingAssignments from './pages/TeachingAssignments';
 import Homeroom from './pages/Homeroom';
 import Assignments from './pages/Assignments';
 import Profile from './pages/Profile';
+import StudentExcelImport from './pages/StudentExcelImport';
+import AIAssistant from './components/AIAssistant';
 
 const SidebarLink = ({ to, icon: Icon, label, isCollapsed }: { to: string, icon: any, label: string, isCollapsed: boolean }) => {
   const location = useLocation();
@@ -60,6 +62,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       case '/semesters': return 'Quản lý Học kỳ';
       case '/classes': return 'Quản lý Lớp học';
       case '/students': return 'Danh sách Học sinh';
+      case '/students/import-excel': return 'Nhập dữ liệu Excel';
       case '/subjects': return 'Quản lý Môn học';
       case '/kanban': return 'Phân công Giảng dạy';
       case '/homeroom': return 'Lớp Chủ nhiệm';
@@ -202,6 +205,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </main>
       </div>
+      <AIAssistant />
       <Toaster position="top-right" richColors />
     </div>
   );
@@ -234,6 +238,7 @@ function App() {
               <Route path="/users" element={<UsersPage />} />
               <Route path="/school-year" element={<SchoolYear />} />
               <Route path="/students" element={<Students />} />
+              <Route path="/students/import-excel" element={<StudentExcelImport />} />
               <Route path="/classes" element={<Classes />} />
               <Route path="/subjects" element={<Subjects />} />
               <Route path="/kanban" element={<TeachingAssignments />} />
@@ -245,6 +250,7 @@ function App() {
               <Route path="/users" element={<Navigate to="/homeroom" replace />} />
               <Route path="/school-year" element={<Navigate to="/homeroom" replace />} />
               <Route path="/students" element={<Navigate to="/homeroom" replace />} />
+              <Route path="/students/import-excel" element={<Navigate to="/homeroom" replace />} />
               <Route path="/classes" element={<Navigate to="/homeroom" replace />} />
               <Route path="/subjects" element={<Navigate to="/homeroom" replace />} />
               <Route path="/kanban" element={<Navigate to="/homeroom" replace />} />

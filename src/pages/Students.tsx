@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, X, AlertCircle, Filter } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Search, Edit, Trash2, X, AlertCircle, Filter, FileSpreadsheet } from 'lucide-react';
 import { toast } from 'sonner';
 import { getStudents, getClasses } from '../lib/db';
 
@@ -139,13 +140,22 @@ export default function Students() {
           <h1 className="text-2xl font-bold text-black dark:text-white">Danh sách Học sinh</h1>
           <p className="text-sm text-black dark:text-white mt-1">Quản lý toàn diện hồ sơ học sinh, hỗ trợ bộ lọc và tra cứu nhanh.</p>
         </div>
-        <button 
-          onClick={() => handleOpenModal()}
-          className="inline-flex items-center justify-center px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-sm cursor-pointer"
-        >
-          <Plus size={16} className="mr-2" />
-          Thêm mới
-        </button>
+        <div className="flex items-center gap-2">
+          <Link 
+            to="/students/import-excel"
+            className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white rounded-md font-medium text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors shadow-sm cursor-pointer"
+          >
+            <FileSpreadsheet size={16} className="mr-2 text-emerald-600 dark:text-emerald-400" />
+            Nhập Excel
+          </Link>
+          <button 
+            onClick={() => handleOpenModal()}
+            className="inline-flex items-center justify-center px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-sm cursor-pointer"
+          >
+            <Plus size={16} className="mr-2" />
+            Thêm mới
+          </button>
+        </div>
       </div>
 
       {/* Filters and Table Card */}

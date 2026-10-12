@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, GripVertical, Trash2, X, AlertCircle, Edit } from 'lucide-react';
+import { Plus, Search, GripVertical, Trash2, X, AlertCircle, Edit, Bot, Sparkles, Loader2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { auditTeachingAssignments } from '../lib/ai';
+import FormattedMarkdown from '../components/FormattedMarkdown';
 import { 
   DndContext, 
   DragOverlay, 
@@ -108,6 +110,39 @@ export default function TeachingAssignments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeDragItem, setActiveDragItem] = useState<any>(null);
   const [editId, setEditId] = useState<number | null>(null);
+
+  // AI Audit State
+  const [isAuditing, setIsAuditing] = useState(false);
+  const [auditModalOpen, setAuditModalOpen] = useState(false);
+  const [auditResult, setAuditResult] = useState('');
+  const [isAuditCopied, setIsAuditCopied] = useState(false);
+
+  const handleAuditAssignments = async () => {
+    setIsAuditing(true);
+    try {
+      const result = await auditTeachingAssignments({
+        assignments,
+        teachers,
+        classes,
+        subjects,
+      });
+      setAuditResult(result);
+      setAuditModalOpen(true);
+      toast.success('🎉 AI đã hoàn tất rà soát phân công giảng dạy!');
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Không thể thực hiện rà soát AI lúc này. Vui lòng thử lại!');
+    } finally {
+      setIsAuditing(false);
+    }
+  };
+
+  const handleCopyAudit = () => {
+    navigator.clipboard.writeText(auditResult);
+    setIsAuditCopied(true);
+    toast.success('Đã sao chép phân tích AI vào clipboard!');
+    setTimeout(() => setIsAuditCopied(false), 2000);
+  };
   
   // Form State
   const [formData, setFormData] = useState({
@@ -241,17 +276,36 @@ export default function TeachingAssignments() {
           </h1>
           <p className="text-sm text-black dark:text-white mt-1">Kéo thả các lớp học giữa các cột để phân công giáo viên.</p>
         </div>
-        <button 
-          onClick={() => {
-            setEditId(null);
-            setFormData({ teacherId: teachers[0]?.id || 0, classId: 0, subjectId: 0, dayOfWeek: 'Thứ 2', period: 'Tiết 1' });
-            setIsModalOpen(true);
-          }}
-          className="inline-flex items-center justify-center px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-sm cursor-pointer"
-        >
-          <Plus size={16} className="mr-2" />
-          Phân công mới
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleAuditAssignments}
+            disabled={isAuditing}
+            className="inline-flex items-center justify-center px-3.5 py-2 border border-purple-300 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 rounded-md font-semibold text-sm hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+          >
+            {isAuditing ? (
+              <>
+                <Loader2 size={16} className="animate-spin mr-2" />
+                Đang rà soát...
+              </>
+            ) : (
+              <>
+                <Bot size={16} className="mr-2" />
+                AI Rà soát lịch dạy
+              </>
+            )}
+          </button>
+          <button 
+            onClick={() => {
+              setEditId(null);
+              setFormData({ teacherId: teachers[0]?.id || 0, classId: 0, subjectId: 0, dayOfWeek: 'Thứ 2', period: 'Tiết 1' });
+              setIsModalOpen(true);
+            }}
+            className="inline-flex items-center justify-center px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-md font-medium text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-sm cursor-pointer"
+          >
+            <Plus size={16} className="mr-2" />
+            Phân công mới
+          </button>
+        </div>
       </div>
 
       {/* Kanban Board */}
@@ -403,6 +457,71 @@ export default function TeachingAssignments() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Modal AI Audit Result */}
+      {auditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setAuditModalOpen(false)}></div>
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-3xl relative z-10 overflow-hidden flex flex-col max-h-[88vh] border border-gray-200 dark:border-zinc-800">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-zinc-800 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-zinc-900 dark:to-zinc-900">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
+                  <Bot size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-black dark:text-white">
+                    Báo cáo Rà soát & Tối ưu Phân công Giảng dạy
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Thẩm định lịch dạy bởi Everest AI (Model qwen/qwen3.8-27b) • {assignments.length} tiết phân công
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setAuditModalOpen(false)} className="text-gray-400 hover:text-black dark:hover:text-white p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-zinc-900">
+              <FormattedMarkdown content={auditResult} />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/80 flex items-center justify-between">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                💡 Rà soát phát hiện xung đột và cân bằng tải số tiết giữa các giáo viên.
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyAudit}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-white rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                >
+                  {isAuditCopied ? (
+                    <>
+                      <Check size={16} className="mr-1.5 text-emerald-600" />
+                      Đã chép
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} className="mr-1.5" />
+                      Sao chép báo cáo
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuditModalOpen(false)}
+                  className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors cursor-pointer"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
