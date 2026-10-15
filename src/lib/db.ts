@@ -2,26 +2,26 @@ export const getInitialData = () => {
   const oldStudents = JSON.parse(localStorage.getItem('students') || '[]');
   if (!localStorage.getItem('students') || (oldStudents.length > 0 && oldStudents.length < 5)) {
     localStorage.setItem('students', JSON.stringify([
-      { id: 1, name: 'Nguyễn Tuấn Kiệt', classId: 1, gender: 'Nam', birthday: '2008-05-12', ethnicity: 'Kinh', contactPhone: '0901234567', status: 'Đang học' },
-      { id: 2, name: 'Phạm Phương Thảo', classId: 1, gender: 'Nữ', birthday: '2008-11-23', ethnicity: 'Kinh', contactPhone: '0909876543', status: 'Đang học' },
-      { id: 3, name: 'Lê Hoàng Phong', classId: 2, gender: 'Nam', birthday: '2008-01-15', ethnicity: 'Kinh', contactPhone: '0912345678', status: 'Đang học' },
-      { id: 4, name: 'Trần Vũ Mai Lan', classId: 2, gender: 'Nữ', birthday: '2008-09-02', ethnicity: 'Tày', contactPhone: '0987654321', status: 'Đang học' },
-      { id: 5, name: 'Vũ Đức Duy', classId: 1, gender: 'Nam', birthday: '2008-04-18', ethnicity: 'Kinh', contactPhone: '0933112233', status: 'Đang học' },
-      { id: 6, name: 'Hoàng Bích Hằng', classId: 1, gender: 'Nữ', birthday: '2008-07-30', ethnicity: 'Kinh', contactPhone: '0944556677', status: 'Đang học' },
-      { id: 7, name: 'Đặng Thái Sơn', classId: 2, gender: 'Nam', birthday: '2008-12-05', ethnicity: 'Kinh', contactPhone: '0911223344', status: 'Đang học' },
-      { id: 8, name: 'Bùi Thị Thanh Tâm', classId: 2, gender: 'Nữ', birthday: '2008-02-14', ethnicity: 'Mường', contactPhone: '0999888777', status: 'Đã tốt nghiệp' },
-      { id: 9, name: 'Lương Thế Vinh', classId: 1, gender: 'Nam', birthday: '2008-06-25', ethnicity: 'Kinh', contactPhone: '0988776655', status: 'Đang học' },
-      { id: 10, name: 'Đỗ Quyên Quyên', classId: 2, gender: 'Nữ', birthday: '2008-10-10', ethnicity: 'Kinh', contactPhone: '0977665544', status: 'Đang học' },
-      { id: 11, name: 'Phan Đình Tùng', classId: 1, gender: 'Nam', birthday: '2008-03-08', ethnicity: 'Kinh', contactPhone: '0966554433', status: 'Chuyển trường' },
-      { id: 12, name: 'Trịnh Khánh Ngọc', classId: 2, gender: 'Nữ', birthday: '2008-08-19', ethnicity: 'Kinh', contactPhone: '0955443322', status: 'Đang học' },
-      { id: 13, name: 'Tạ Quang Thắng', classId: 1, gender: 'Nam', birthday: '2008-11-01', ethnicity: 'Kinh', contactPhone: '0944332211', status: 'Đang học' },
-      { id: 14, name: 'Ngô Thanh Vân', classId: 2, gender: 'Nữ', birthday: '2008-05-20', ethnicity: 'Kinh', contactPhone: '0933221100', status: 'Đang học' },
-      { id: 15, name: 'Dương Khang', classId: 1, gender: 'Nam', birthday: '2008-09-15', ethnicity: 'Kinh', contactPhone: '0922110099', status: 'Đang học' },
-      { id: 16, name: 'Đinh Bích Nga', classId: 2, gender: 'Nữ', birthday: '2008-12-25', ethnicity: 'Kinh', contactPhone: '0911009988', status: 'Đang học' },
-      { id: 17, name: 'Lý Tiểu Long', classId: 1, gender: 'Nam', birthday: '2008-01-01', ethnicity: 'Hoa', contactPhone: '0900998877', status: 'Đang học' },
-      { id: 18, name: 'Đồng Trúc Ly', classId: 2, gender: 'Nữ', birthday: '2008-07-07', ethnicity: 'Kinh', contactPhone: '0899887766', status: 'Đang học' },
-      { id: 19, name: 'Khổng Minh', classId: 1, gender: 'Nam', birthday: '2008-04-04', ethnicity: 'Kinh', contactPhone: '0888776655', status: 'Đang học' },
-      { id: 20, name: 'Tô Ánh Nguyệt', classId: 2, gender: 'Nữ', birthday: '2008-10-31', ethnicity: 'Kinh', contactPhone: '0877665544', status: 'Đang học' },
+      { id: 1, name: 'Nguyễn Tuấn Kiệt', classId: 1, gender: 'Nam', birthday: '2008-05-12', ethnicity: 'Kinh', contactPhone: '0901234567', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 2, name: 'Phạm Phương Thảo', classId: 1, gender: 'Nữ', birthday: '2008-11-23', ethnicity: 'Kinh', contactPhone: '0909876543', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 3, name: 'Lê Hoàng Phong', classId: 2, gender: 'Nam', birthday: '2008-01-15', ethnicity: 'Kinh', contactPhone: '0912345678', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 4, name: 'Trần Vũ Mai Lan', classId: 2, gender: 'Nữ', birthday: '2008-09-02', ethnicity: 'Tày', contactPhone: '0987654321', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 5, name: 'Vũ Đức Duy', classId: 1, gender: 'Nam', birthday: '2008-04-18', ethnicity: 'Kinh', contactPhone: '0933112233', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 6, name: 'Hoàng Bích Hằng', classId: 1, gender: 'Nữ', birthday: '2008-07-30', ethnicity: 'Kinh', contactPhone: '0944556677', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 7, name: 'Đặng Thái Sơn', classId: 2, gender: 'Nam', birthday: '2008-12-05', ethnicity: 'Kinh', contactPhone: '0911223344', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 8, name: 'Bùi Thị Thanh Tâm', classId: 2, gender: 'Nữ', birthday: '2008-02-14', ethnicity: 'Mường', contactPhone: '0999888777', status: 'Đã tốt nghiệp', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 9, name: 'Lương Thế Vinh', classId: 1, gender: 'Nam', birthday: '2008-06-25', ethnicity: 'Kinh', contactPhone: '0988776655', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 10, name: 'Đỗ Quyên Quyên', classId: 2, gender: 'Nữ', birthday: '2008-10-10', ethnicity: 'Kinh', contactPhone: '0977665544', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 11, name: 'Phan Đình Tùng', classId: 1, gender: 'Nam', birthday: '2008-03-08', ethnicity: 'Kinh', contactPhone: '0966554433', status: 'Chuyển trường', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 12, name: 'Trịnh Khánh Ngọc', classId: 2, gender: 'Nữ', birthday: '2008-08-19', ethnicity: 'Kinh', contactPhone: '0955443322', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 13, name: 'Tạ Quang Thắng', classId: 1, gender: 'Nam', birthday: '2008-11-01', ethnicity: 'Kinh', contactPhone: '0944332211', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 14, name: 'Ngô Thanh Vân', classId: 2, gender: 'Nữ', birthday: '2008-05-20', ethnicity: 'Kinh', contactPhone: '0933221100', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 15, name: 'Dương Khang', classId: 1, gender: 'Nam', birthday: '2008-09-15', ethnicity: 'Kinh', contactPhone: '0922110099', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 16, name: 'Đinh Bích Nga', classId: 2, gender: 'Nữ', birthday: '2008-12-25', ethnicity: 'Kinh', contactPhone: '0911009988', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 17, name: 'Lý Tiểu Long', classId: 1, gender: 'Nam', birthday: '2008-01-01', ethnicity: 'Hoa', contactPhone: '0900998877', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 18, name: 'Đồng Trúc Ly', classId: 2, gender: 'Nữ', birthday: '2008-07-07', ethnicity: 'Kinh', contactPhone: '0899887766', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 19, name: 'Khổng Minh', classId: 1, gender: 'Nam', birthday: '2008-04-04', ethnicity: 'Kinh', contactPhone: '0888776655', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
+      { id: 20, name: 'Tô Ánh Nguyệt', classId: 2, gender: 'Nữ', birthday: '2008-10-31', ethnicity: 'Kinh', contactPhone: '0877665544', status: 'Đang học', gpa: null, riskLevel: null, aiEvaluation: null },
     ]));
   }
   
@@ -102,6 +102,16 @@ export const getAssignments = () => JSON.parse(localStorage.getItem('assignments
 export const saveStudents = (data: any) => localStorage.setItem('students', JSON.stringify(data));
 export const saveClasses = (data: any) => localStorage.setItem('classes', JSON.stringify(data));
 export const saveAssignments = (data: any) => localStorage.setItem('assignments', JSON.stringify(data));
+
+// Save a single student's evaluation (gpa, riskLevel, aiEvaluation)
+export const saveStudentEvaluation = (studentId: number, updates: { gpa?: number | null; riskLevel?: string | null; aiEvaluation?: string | null }) => {
+  const students = getStudents();
+  const idx = students.findIndex((s: any) => s.id === studentId);
+  if (idx !== -1) {
+    students[idx] = { ...students[idx], ...updates };
+    saveStudents(students);
+  }
+};
 
 // Initialize on load
 getInitialData();

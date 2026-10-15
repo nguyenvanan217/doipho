@@ -132,7 +132,66 @@ QUY TẮC ĐỊNH DẠNG BẮT BUỘC:
   ], 0.3);
 }
 
-// 3. Everest AI Assistant Chatbot Context Generator
+// 3. AI Nhận xét & Cảnh báo sớm học sinh
+export async function generateStudentEvaluation(student: {
+  name: string;
+  gender: string;
+  birthday: string;
+  ethnicity: string;
+  gpa: number;
+  className: string;
+  status: string;
+  positiveTraits?: string[];
+  limitationTraits?: string[];
+}): Promise<string> {
+  const age = new Date().getFullYear() - new Date(student.birthday).getFullYear();
+  const gpaCategory = student.gpa >= 8.0 ? 'Xuất sắc' : student.gpa >= 6.5 ? 'Khá' : student.gpa >= 5.0 ? 'Trung bình' : 'Yếu / Cần chú ý đặc biệt';
+
+  const positiveLine = (student.positiveTraits && student.positiveTraits.length > 0)
+    ? `- Điểm tích cực giáo viên ghi nhận: ${student.positiveTraits.join(', ')}.`
+    : '';
+  const limitationLine = (student.limitationTraits && student.limitationTraits.length > 0)
+    ? `- Hạn chế cần cải thiện: ${student.limitationTraits.join(', ')}.`
+    : '';
+  const traitBlock = [positiveLine, limitationLine].filter(Boolean).join('\n');
+
+  const prompt = `
+Bạn là Giáo viên Chủ nhiệm chuyên nghiệp tại trường Everest School. Hãy viết nhận xét học bạ cuối kỳ cho học sinh sau:
+
+THÔNG TIN HỌC SINH:
+- Họ và tên: ${student.name}
+- Giới tính: ${student.gender}
+- Tuổi: ${age} tuổi
+- Dân tộc: ${student.ethnicity}
+- Lớp: ${student.className}
+- Điểm trung bình (GPA): ${student.gpa.toFixed(1)} / 10 → Xếp loại học lực: **${gpaCategory}**
+${traitBlock}
+
+NHIỆM VỤ: Hãy viết ĐÚNG 3 phần nhận xét sau (ngắn gọn, súc tích, mỗi phần 2-3 câu). Hãy LỒNG GHÉP cụ thể các điểm tích cực và hạn chế đã nêu vào nội dung nhận xét:
+
+**📚 Kết quả học tập:**
+[Nhận xét về điểm trung bình ${student.gpa.toFixed(1)}, xếp loại ${gpaCategory}. Nếu có điểm tích cực thì nhấn mạnh vào chúng.]
+
+**🌱 Rèn luyện & Đạo đức:**
+[Nhận xét về thái độ học tập, kỷ luật, đạo đức. Nếu có hạn chế được chọn thì nhận xét đúng thực tế nhưng khéo léo, xây dựng.]
+
+**💡 Định hướng & Khuyến nghị:**
+[Lời khuyên cụ thể, thiết thực giúp học sinh cải thiện hoặc phát huy. Hướng đến các hạn chế đã nêu nếu có.]
+
+QUY TẮC ĐỊNH DẠNG:
+- Giữ đúng các tiêu đề in đậm như mẫu trên.
+- Văn phong sư phạm, nhân văn, ấm áp, truyền động lực.
+- Đề cập đích danh tên học sinh "${student.name}" ít nhất 1 lần.
+- Không sử dụng ký tự đặc biệt thừa, giữ câu văn thuần Việt, trong sáng.
+`;
+
+  return callGroqChat([
+    { role: 'system', content: 'Bạn là giáo viên chủ nhiệm dày dạn kinh nghiệm tại trường Everest School, chuyên viết nhận xét học bạ chuyên nghiệp.' },
+    { role: 'user', content: prompt }
+  ], 0.5);
+}
+
+// 4. Everest AI Assistant Chatbot Context Generator
 export function getSystemKnowledgeContext(): string {
   try {
     const students = JSON.parse(localStorage.getItem('students') || '[]');
